@@ -9,8 +9,13 @@ PWA do Hot Sales, com dashboard principal e app de atendente.
 
 ## Configuração
 
-Edite `config.js` com a URL do Web App do Google Apps Script e endpoints necessários.
+Edite `config.js` com os endpoints necessários enquanto a versão comercial ainda estiver em fase estática/protótipo.
+
+## Requisitos comerciais
+
+- Custo de produto por venda: permitir configurar um custo fixo e/ou percentual por produto/oferta. Esse custo deve ser subtraído de cada venda nos cálculos de lucro real, margem, ROAS real, CPA real e relatórios. Quando fixo e percentual estiverem preenchidos, aplicar os dois.
+- O custo precisa funcionar tanto para vendas vindas por integração/webhook quanto para vendas lançadas manualmente.
 
 ## Publicação
 
-Pode ser publicado como site estático no GitHub Pages. Os slugs continuam separados para dificultar acesso direto.
+Pode ser publicado como site estático no GitHub Pages durante a fase de protótipo. A versão comercial final deve evoluir para login, banco de dados e controle de assinatura.
