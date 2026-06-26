@@ -8,21 +8,21 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="HS Metrics">
     <title>HS Metrics - Sheila</title>
-    <link rel="manifest" href="../manifest.webmanifest?v=56">
-    <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png?v=55">
-    <link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png?v=55">
-    <link rel="apple-touch-icon" sizes="192x192" href="../assets/icon-192.png?v=55">
-    <link rel="apple-touch-icon" sizes="512x512" href="../assets/icon-512.png?v=55">
-    <link rel="icon" href="../assets/icon-192.png?v=55" type="image/png">
-    <link rel="stylesheet" href="../styles.css?v=56">
-    <link rel="stylesheet" href="../attendant.css?v=56">
+    <link rel="manifest" href="../manifest.webmanifest?v=97">
+    <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png?v=56">
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png?v=56">
+    <link rel="apple-touch-icon" sizes="192x192" href="../assets/icon-192.png?v=56">
+    <link rel="apple-touch-icon" sizes="512x512" href="../assets/icon-512.png?v=56">
+    <link rel="icon" href="../assets/icon-192.png?v=56" type="image/png">
+    <link rel="stylesheet" href="../styles.css?v=97">
+    <link rel="stylesheet" href="../attendant.css?v=97">
   </head>
   <body>
     <div class="app-shell">
       <aside class="sidebar" aria-label="Navegação principal">
         <a class="brand" href="#dashboard" aria-label="HS Metrics">
-          <span class="brand-mark" aria-hidden="true"><img src="../assets/icon.svg" alt=""></span>
-          <img class="brand-wordmark" src="../assets/hs-metrics-written-logo.webp?v=56" alt="HS Metrics">
+          <span class="brand-mark" aria-hidden="true"><img src="../assets/icon-192.png?v=56" alt=""></span>
+          <img class="brand-wordmark" src="../assets/hs-metrics-written-logo.webp?v=97" alt="HS Metrics">
         </a>
         <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="Recolher barra lateral" aria-expanded="true" title="Recolher barra lateral">
           <span aria-hidden="true"></span>
@@ -46,8 +46,8 @@
       <main class="main attendant-main">
         <header class="mobile-header">
           <a class="brand" href="#dashboard" aria-label="HS Metrics">
-            <span class="brand-mark" aria-hidden="true"><img src="../assets/icon.svg" alt=""></span>
-            <img class="brand-wordmark" src="../assets/hs-metrics-written-logo.webp?v=56" alt="HS Metrics">
+            <span class="brand-mark" aria-hidden="true"><img src="../assets/icon-192.png?v=56" alt=""></span>
+            <img class="brand-wordmark" src="../assets/hs-metrics-written-logo.webp?v=97" alt="HS Metrics">
           </a>
           <span class="sync-pill" id="syncStatus">Carregando</span>
         </header>
@@ -110,7 +110,7 @@
               <span class="period-label" id="salesChartPeriod">Hoje</span>
             </div>
             <div class="line-chart-wrap">
-              <svg class="line-chart" id="salesChart" viewBox="0 0 980 330" preserveAspectRatio="xMidYMid meet" aria-label="Gráfico de vendas"></svg>
+              <svg class="line-chart" id="salesChart" viewBox="0 0 1000 280" preserveAspectRatio="xMidYMid meet" aria-label="Gráfico de vendas"></svg>
               <div class="chart-tooltip" id="chartTooltip" hidden></div>
             </div>
           </article>
@@ -120,7 +120,7 @@
               <span class="period-label" id="dailySalesChartPeriod">Este mês</span>
             </div>
             <div class="line-chart-wrap">
-              <svg class="line-chart" id="dailySalesChart" viewBox="0 0 980 330" preserveAspectRatio="xMidYMid meet" aria-label="Gráfico de vendas por dia"></svg>
+              <svg class="line-chart" id="dailySalesChart" viewBox="0 0 1000 280" preserveAspectRatio="xMidYMid meet" aria-label="Gráfico de vendas por dia"></svg>
               <div class="chart-tooltip" id="dailyChartTooltip" hidden></div>
             </div>
           </article>
@@ -130,7 +130,7 @@
           <article class="panel transactions-panel">
             <div class="transactions-head">
               <h1>Transações</h1>
-              <input id="transactionSearch" type="search" placeholder="Buscar por pagador ou valor" aria-label="Buscar transações">
+              <input id="transactionSearch" type="search" placeholder="Buscar por cliente, telefone ou valor" aria-label="Buscar transações">
             </div>
             <div class="table-wrap">
               <table>
@@ -138,7 +138,8 @@
                   <tr>
                     <th>Data</th>
                     <th>Hora</th>
-                    <th>Pagador</th>
+                    <th>Cliente</th>
+                    <th>Telefone</th>
                     <th>Valor</th>
                   </tr>
                 </thead>
@@ -185,12 +186,12 @@
         </button>
       </nav>
     </div>
-    <script src="../config.js?v=55"></script>
-    <script src="../push-client.js?v=55"></script>
+    <script src="../config.js?v=56"></script>
+    <script src="../push-client.js?v=63"></script>
     <script>
       window.HSBI_ATTENDANT_CONFIG = { slug: "k9v2m7q4", name: "Sheila" };
     </script>
-    <script src="../attendant.js?v=55"></script>
+    <script src="../attendant.js?v=70"></script>
   </body>
 </html>
 

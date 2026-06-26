@@ -19,13 +19,16 @@
     attendant: {
       nome: pageConfig.name,
       comissao_percentual: null,
-      salario_fixo_mensal: 0
+      salario_fixo_mensal: 0,
+      inicio_trabalho: "",
+      pausas: ""
     },
     pageIndex: 1,
     lastUpdated: null,
     seenSaleIds: new Set(),
     hasInitializedSales: false,
-    notificationsEnabled: loadNotificationPref()
+    notificationsEnabled: loadNotificationPref(),
+    animateDashboard: false
   };
 
   const els = {
@@ -51,6 +54,8 @@
     testNotification: document.getElementById("testNotification")
   };
 
+  const metricAnimationFrames = new Map();
+
   document.addEventListener("DOMContentLoaded", init);
 
   function init() {
@@ -71,9 +76,11 @@
     els.navItems.forEach((button) => button.addEventListener("click", () => setPage(button.dataset.page)));
     els.periodButtons.forEach((button) => {
       button.addEventListener("click", () => {
+        if (state.period === button.dataset.period) return;
         state.period = button.dataset.period;
         state.pageIndex = 1;
         if (state.period !== "custom") state.appliedPeriod = state.period;
+        if (state.page === "dashboard" && state.period !== "custom") state.animateDashboard = true;
         render();
       });
     });
@@ -84,7 +91,7 @@
         render();
       });
     });
-    els.refreshButton.addEventListener("click", () => refreshData({ applySelection: true }));
+    els.refreshButton.addEventListener("click", () => refreshData({ applySelection: true, buttonLoading: true }));
     if (els.sidebarToggle) {
       els.sidebarToggle.addEventListener("click", toggleSidebar);
     }
@@ -118,7 +125,7 @@
         await syncAttendantPush(true);
         const pushClient = await ensurePushClient();
         await pushClient.test("sheila", {
-          title: "Venda Realizada! 💰",
+          title: "\uD83D\uDCB0 Venda Realizada!",
           body: "",
           url: `${location.origin}${location.pathname}#transactions`
         });
@@ -171,21 +178,25 @@
     }
     setSyncText("Atualizando");
     els.refreshButton.disabled = true;
+    setRefreshButtonLoading(Boolean(options.buttonLoading));
     try {
       const payload = await fetchAttendantPayload(getPreloadRange());
       applyPayload(payload, true);
       if (state.appliedPeriod === "custom") await ensurePeriodData();
       state.lastUpdated = new Date();
+      state.animateDashboard = state.page === "dashboard";
       render();
       setSyncText(`Atualizado ${formatTime(state.lastUpdated)}`);
     } catch (error) {
       console.error(error);
       applyPayload(buildEmptyPayload(), true);
       state.lastUpdated = new Date();
+      state.animateDashboard = state.page === "dashboard";
       render();
       setSyncText("Sem dados");
     } finally {
       els.refreshButton.disabled = false;
+      setRefreshButtonLoading(false);
     }
   }
 
@@ -277,7 +288,8 @@
       timestamp,
       data: data || toIsoDate(timestamp),
       hora: hora || formatTime(timestamp),
-      pagador: item.pagador || "Sem pagador",
+      pagador: item.pagador || "Sem cliente",
+      telefone: item.telefone || item.phone || "",
       gross,
       commissionRate,
       value: gross * (commissionRate / 100)
@@ -303,6 +315,9 @@
     renderMetrics();
     renderSalesChart();
     renderDailySalesChart();
+    if (state.page === "dashboard" && state.animateDashboard) {
+      state.animateDashboard = false;
+    }
     renderTransactions();
   }
 
@@ -374,18 +389,20 @@
   }
 
   function renderMetrics() {
+    const animate = state.page === "dashboard" && canAnimateDashboard();
     const sales = state.filteredSales;
     const fixed = buildFixedCredits(getDateRange()).reduce((total, item) => total + item.value, 0);
     const commission = sales.reduce((total, item) => total + item.value, 0);
-    setText("metricTotalIncome", money(commission + fixed));
-    setText("metricCommission", money(commission));
-    setText("metricFixed", money(fixed));
-    setText("metricSales", integer(sales.length));
-    setText("metricRate", state.attendant.comissao_percentual == null ? "N/A" : percent(Number(state.attendant.comissao_percentual || 0) / 100));
+    setText("metricTotalIncome", commission + fixed, { animate, formatter: money });
+    setText("metricCommission", commission, { animate, formatter: money });
+    setText("metricFixed", fixed, { animate, formatter: money });
+    setText("metricSales", sales.length, { animate, formatter: integer });
+    setText("metricRate", state.attendant.comissao_percentual == null ? "N/A" : Number(state.attendant.comissao_percentual || 0) / 100, { animate, formatter: percent });
   }
 
   function renderSalesChart() {
     const grouped = buildHourlySeries();
+    const animateChart = state.page === "dashboard" && state.animateDashboard && canAnimateDashboard();
     const chartBox = els.chart.parentElement.getBoundingClientRect();
     const highestSales = Math.max(0, ...grouped.map((point) => point.sales));
     const maxSales = Math.max(1, Math.ceil(highestSales * 1.2));
@@ -403,7 +420,7 @@
     const points = grouped.map((point, index) => {
       const x = left + index * step + step / 2;
       const y = top + height - (point.sales / maxSales) * height;
-      const barHeight = Math.max(point.sales > 0 ? 4 : 0, top + height - y);
+      const barHeight = Math.max(2, top + height - y);
       return Object.assign({ x, y, barX: x - barWidth / 2, barWidth, barHeight }, point);
     });
     const gridYTop = top;
@@ -419,12 +436,16 @@
       <text x="${left - 18}" y="${gridYMid + 5}" class="axis-text">${Math.round(maxSales / 2)}</text>
       <text x="${left - 18}" y="${gridYBottom + 5}" class="axis-text">0</text>
       ${points.map((point) => `
-        <g class="chart-point" data-index="${point.index}">
+        <g class="chart-point" data-index="${point.index}" style="--bar-delay:${Math.min(point.index * 8, 180)}ms">
           <rect class="sales-bar-hit" x="${point.x - Math.max(point.barWidth, 18) / 2}" y="${top}" width="${Math.max(point.barWidth, 18)}" height="${height}" rx="4"></rect>
           <rect class="sales-bar" x="${point.barX}" y="${top + height - point.barHeight}" width="${point.barWidth}" height="${point.barHeight}" rx="${Math.min(6, point.barWidth / 3)}"></rect>
           <text x="${point.x}" y="${canvasHeight - 12}" class="x-label">${shouldShowAxisLabel(point.index, grouped.length) ? point.label : ""}</text>
         </g>`).join("")}
     `;
+    const chartAnimationCss = animateChart ? `
+      .sales-bar{animation:chartBarIn 680ms cubic-bezier(.2,.78,.2,1) both;animation-delay:var(--bar-delay,0ms);transform-box:fill-box;transform-origin:center bottom}
+      @keyframes chartBarIn{0%{opacity:0;transform:scaleY(.04)}72%{opacity:.82;transform:scaleY(1.015)}100%{opacity:.82;transform:scaleY(1)}}
+    ` : "";
     const style = document.createElementNS("http://www.w3.org/2000/svg", "style");
     style.textContent = `
       .chart-plot-bg{fill:rgba(255,255,255,.012)}
@@ -437,6 +458,7 @@
       .axis-text,.x-label{fill:#b8c0b4;font-size:var(--text-xs)}
       .axis-text{text-anchor:end}
       .x-label{text-anchor:middle}
+      ${chartAnimationCss}
     `;
     els.chart.prepend(style);
     els.chart.querySelectorAll(".chart-point").forEach((node) => {
@@ -450,6 +472,7 @@
   function renderDailySalesChart() {
     if (!els.dailyChart) return;
     const grouped = buildDailySeries();
+    const animateChart = state.page === "dashboard" && state.animateDashboard && canAnimateDashboard();
     const chartBox = els.dailyChart.parentElement.getBoundingClientRect();
     const highestSales = Math.max(0, ...grouped.map((point) => point.sales));
     const maxSales = Math.max(1, Math.ceil(highestSales * 1.2));
@@ -488,7 +511,7 @@
       <text x="${left - 18}" y="${gridYMid + 5}" class="axis-text">${Math.round(maxSales / 2)}</text>
       <text x="${left - 18}" y="${gridYBottom + 5}" class="axis-text">0</text>
       <path d="${areaPath}" class="sales-area"></path>
-      <path d="${path}" class="sales-line"></path>
+      <path d="${path}" class="sales-line" pathLength="1"></path>
       ${points.map((point) => `
         <g class="chart-point" data-index="${point.index}">
           <circle class="point-hit" cx="${point.x}" cy="${point.y}" r="13"></circle>
@@ -496,6 +519,14 @@
           <text x="${point.x}" y="${canvasHeight - 12}" class="x-label">${shouldShowAxisLabel(point.index, grouped.length) ? point.label : ""}</text>
         </g>`).join("")}
     `;
+    const chartAnimationCss = animateChart ? `
+      .sales-line{stroke-dasharray:1;stroke-dashoffset:1;animation:chartLineTraceIn 820ms cubic-bezier(.2,.78,.2,1) both}
+      .sales-area{animation:chartAreaIn 820ms ease both 140ms;transform-box:fill-box;transform-origin:center}
+      .point-dot{animation:chartDotIn 620ms ease both;transform-box:fill-box;transform-origin:center}
+      @keyframes chartLineTraceIn{to{stroke-dashoffset:0}}
+      @keyframes chartAreaIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+      @keyframes chartDotIn{from{opacity:0;transform:scale(.72)}to{opacity:1;transform:scale(1)}}
+    ` : "";
     const style = document.createElementNS("http://www.w3.org/2000/svg", "style");
     style.textContent = `
       .chart-plot-bg{fill:rgba(255,255,255,.012)}
@@ -510,6 +541,7 @@
       .axis-text,.x-label{fill:#b8c0b4;font-size:var(--text-xs)}
       .axis-text{text-anchor:end}
       .x-label{text-anchor:middle}
+      ${chartAnimationCss}
     `;
     els.dailyChart.prepend(style);
     els.dailyChart.querySelectorAll(".chart-point").forEach((node) => {
@@ -523,7 +555,7 @@
   function renderTransactions() {
     const query = els.search.value.trim().toLowerCase();
     const rows = state.displayTransactions
-      .filter((item) => `${item.pagador} ${item.value} ${money(item.value)}`.toLowerCase().includes(query))
+      .filter((item) => `${item.pagador} ${formatPhone(item.telefone)} ${digitsOnly(item.telefone)} ${item.value} ${money(item.value)}`.toLowerCase().includes(query))
       .sort((a, b) => b.timestamp - a.timestamp);
     const tbody = document.getElementById("transactionsBody");
     const totalPages = Math.max(1, Math.ceil(rows.length / baseConfig.rowsPerPage));
@@ -531,7 +563,7 @@
     const visible = rows.slice((state.pageIndex - 1) * baseConfig.rowsPerPage, state.pageIndex * baseConfig.rowsPerPage);
     tbody.innerHTML = "";
     if (!visible.length) {
-      tbody.innerHTML = `<tr><td colspan="4">Nenhuma transação encontrada.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="5">Nenhuma transação encontrada.</td></tr>`;
     } else {
       visible.forEach((item) => {
         const tr = document.createElement("tr");
@@ -539,6 +571,7 @@
           <td>${formatIsoDateBr(item.data)}</td>
           <td>${escapeHtml(item.hora)}</td>
           <td>${escapeHtml(item.pagador)}</td>
+          <td>${escapeHtml(formatPhone(item.telefone))}</td>
           <td>${money(item.value)}</td>
         `;
         tbody.append(tr);
@@ -558,11 +591,14 @@
     const salaryCents = Math.round(salary * 100);
     const baseDailyCents = Math.floor(salaryCents / 30);
     const remainderCents = salaryCents - baseDailyCents * 30;
+    const workStart = getWorkStartDate();
     const today = endOfDay(new Date());
+    const start = workStart && startOfDay(range.start) < workStart ? workStart : startOfDay(range.start);
     const end = endOfDay(range.end) > today ? today : endOfDay(range.end);
     const credits = [];
-    for (let cursor = startOfDay(range.start); cursor <= end; cursor = addDays(cursor, 1)) {
+    for (let cursor = start; cursor <= end; cursor = addDays(cursor, 1)) {
       if (cursor.getDate() === 31) continue;
+      if (!isWorkingDate(cursor)) continue;
       const dayOfMonth = cursor.getDate();
       const daily = (baseDailyCents + (dayOfMonth <= remainderCents ? 1 : 0)) / 100;
       const timestamp = new Date(cursor);
@@ -573,7 +609,7 @@
         timestamp,
         data: toIsoDate(timestamp),
         hora: "00:00",
-        pagador: "Lucas Moreira",
+      pagador: "Lucas Moreira",
         value: daily,
         gross: 0,
         commissionRate: 0
@@ -586,6 +622,7 @@
     const range = getDateRange();
     return state.transactions
       .filter((item) => item.timestamp >= startOfDay(range.start) && item.timestamp <= endOfDay(range.end))
+      .filter((item) => isWorkingDate(item.timestamp))
       .sort((a, b) => b.timestamp - a.timestamp);
   }
 
@@ -611,7 +648,8 @@
       const sales = state.transactions.filter((item) => {
         return item.timestamp >= startOfDay(range.start)
           && item.timestamp <= endOfDay(range.end)
-          && toIsoDate(item.timestamp) === label.key;
+          && toIsoDate(item.timestamp) === label.key
+          && isWorkingDate(item.timestamp);
       });
       return {
         index,
@@ -627,17 +665,70 @@
     return state.appliedPeriod === "today" || state.appliedPeriod === "yesterday" ? "month" : state.appliedPeriod;
   }
 
+  function isWorkingDate(date) {
+    const day = startOfDay(date);
+    const workStart = getWorkStartDate();
+    if (workStart && day < workStart) return false;
+    return !getPauseRanges().some((range) => day >= range.start && day <= range.end);
+  }
+
+  function getWorkStartDate() {
+    const normalized = normalizeFlexibleDate(state.attendant.inicio_trabalho);
+    return normalized ? startOfDay(parseDate(`${normalized}T00:00:00`)) : null;
+  }
+
+  function getPauseRanges() {
+    const raw = String(state.attendant.pausas || "").trim();
+    if (!raw) return [];
+    return raw
+      .split(/[;\n|]+/)
+      .map((entry) => entry.trim())
+      .filter(Boolean)
+      .map((entry) => {
+        const dates = entry.match(/\d{4}-\d{2}-\d{2}|\d{1,2}\/\d{1,2}\/\d{2,4}/g) || [];
+        const start = normalizeFlexibleDate(dates[0]);
+        const end = normalizeFlexibleDate(dates[1] || dates[0]);
+        if (!start || !end) return null;
+        const startDate = startOfDay(parseDate(`${start}T00:00:00`));
+        const endDate = startOfDay(parseDate(`${end}T00:00:00`));
+        return startDate <= endDate
+          ? { start: startDate, end: endDate }
+          : { start: endDate, end: startDate };
+      })
+      .filter(Boolean);
+  }
+
+  function normalizeFlexibleDate(value) {
+    if (!value) return "";
+    if (value instanceof Date) return toIsoDate(value);
+    const text = String(value).trim();
+    if (/^\d{4}-\d{2}-\d{2}/.test(text)) return text.slice(0, 10);
+    const br = text.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+    if (br) {
+      const year = br[3].length === 2 ? `20${br[3]}` : br[3];
+      return `${year}-${br[2].padStart(2, "0")}-${br[1].padStart(2, "0")}`;
+    }
+    const parsed = new Date(text);
+    return Number.isNaN(parsed.getTime()) ? "" : toIsoDate(parsed);
+  }
+
   function setPage(page) {
     if (!["dashboard", "transactions", "notifications"].includes(page)) return;
+    if (state.page === page) return;
     state.page = page;
     els.pages.forEach((section) => section.classList.toggle("is-active", section.dataset.page === page));
     els.navItems.forEach((item) => item.classList.toggle("is-active", item.dataset.page === page));
     document.body.dataset.currentPage = page;
     if (location.hash !== `#${page}`) history.replaceState(null, "", `#${page}`);
-    if (page === "dashboard") requestAnimationFrame(() => {
-      renderSalesChart();
-      renderDailySalesChart();
-    });
+    if (page === "dashboard") {
+      state.animateDashboard = true;
+      renderMetrics();
+      requestAnimationFrame(() => {
+        renderSalesChart();
+        renderDailySalesChart();
+        state.animateDashboard = false;
+      });
+    }
   }
 
   function getTotalPages() {
@@ -665,7 +756,7 @@
         return;
       }
       const script = document.createElement("script");
-      script.src = "../push-client.js?v=42";
+      script.src = "../push-client.js?v=62";
       script.dataset.pushClient = "dynamic";
       script.onload = () => window.HSBIPush
         ? resolve(window.HSBIPush)
@@ -677,7 +768,7 @@
 
   function registerServiceWorker() {
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("../sw.js?v=42").then((registration) => registration.update()).catch(console.error);
+      navigator.serviceWorker.register("../sw.js?v=63").then((registration) => registration.update()).catch(console.error);
     }
   }
 
@@ -881,6 +972,23 @@
     return Number(value || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
   }
 
+  function digitsOnly(value) {
+    return String(value || "").replace(/\D/g, "");
+  }
+
+  function formatPhone(value) {
+    let digits = digitsOnly(value);
+    if (!digits) return "";
+    if (digits.startsWith("55") && digits.length > 11) digits = digits.slice(2);
+    if (digits.length === 10) digits = `${digits.slice(0, 2)}9${digits.slice(2)}`;
+    if (digits.length > 11) digits = digits.slice(-11);
+    if (digits.length < 10) return digits;
+    const ddd = digits.slice(0, 2);
+    const first = digits.length === 11 ? digits.slice(2, 7) : digits.slice(2, 6);
+    const second = digits.length === 11 ? digits.slice(7, 11) : digits.slice(6, 10);
+    return `(${ddd}) ${first}-${second}`;
+  }
+
   function integer(value) {
     return Number(value || 0).toLocaleString("pt-BR", { maximumFractionDigits: 0 });
   }
@@ -893,8 +1001,44 @@
     return values.reduce((total, value) => total + Number(value || 0), 0);
   }
 
-  function setText(id, value) {
-    document.getElementById(id).textContent = value;
+  function setText(id, value, options = {}) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const numberValue = Number(value);
+    const hasNumber = value !== null && value !== "" && Number.isFinite(numberValue);
+    const displayValue = hasNumber && options.formatter ? options.formatter(numberValue) : String(value);
+    if (options.animate && hasNumber && options.formatter) {
+      animateMetricValue(el, numberValue, options.formatter, displayValue);
+      return;
+    }
+    const frame = metricAnimationFrames.get(el);
+    if (frame) window.cancelAnimationFrame(frame);
+    metricAnimationFrames.delete(el);
+    el.textContent = displayValue;
+  }
+
+  function animateMetricValue(el, target, formatter, finalText) {
+    const previousFrame = metricAnimationFrames.get(el);
+    if (previousFrame) window.cancelAnimationFrame(previousFrame);
+    const duration = 820;
+    const start = performance.now();
+    const initial = 0;
+    const tick = (now) => {
+      const progress = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = initial + (target - initial) * eased;
+      el.textContent = progress >= 1 ? finalText : formatter(current);
+      if (progress < 1) {
+        metricAnimationFrames.set(el, window.requestAnimationFrame(tick));
+      } else {
+        metricAnimationFrames.delete(el);
+      }
+    };
+    metricAnimationFrames.set(el, window.requestAnimationFrame(tick));
+  }
+
+  function canAnimateDashboard() {
+    return !window.matchMedia || !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   }
 
   function escapeHtml(value) {
@@ -912,6 +1056,12 @@
   function setSyncText(text) {
     els.syncStatus.textContent = text;
     els.desktopSyncStatus.textContent = text;
+  }
+
+  function setRefreshButtonLoading(isLoading) {
+    if (!els.refreshButton) return;
+    els.refreshButton.classList.toggle("is-loading", isLoading);
+    els.refreshButton.setAttribute("aria-busy", String(isLoading));
   }
 
   function loadNotificationPref() {

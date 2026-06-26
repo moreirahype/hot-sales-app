@@ -8,13 +8,13 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="HS Metrics">
     <title>HS Metrics</title>
-    <link rel="manifest" href="../manifest.webmanifest?v=56">
+    <link rel="manifest" href="../manifest.webmanifest?v=97">
     <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png?v=55">
     <link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png?v=55">
     <link rel="apple-touch-icon" sizes="192x192" href="../assets/icon-192.png?v=55">
     <link rel="apple-touch-icon" sizes="512x512" href="../assets/icon-512.png?v=55">
     <link rel="icon" href="../assets/icon-192.png?v=55" type="image/png">
-    <link rel="stylesheet" href="../styles.css?v=56">
+    <link rel="stylesheet" href="../styles.css?v=97">
   </head>
   <body>
     <div class="app-shell">
@@ -23,7 +23,7 @@
           <span class="brand-mark" aria-hidden="true">
             <img src="../assets/icon-192.png?v=55" alt="">
           </span>
-          <img class="brand-wordmark" src="../assets/hs-metrics-written-logo.webp?v=56" alt="HS Metrics">
+          <img class="brand-wordmark" src="../assets/hs-metrics-written-logo.webp?v=97" alt="HS Metrics">
         </a>
         <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="Recolher barra lateral" aria-expanded="true" title="Recolher barra lateral">
           <span aria-hidden="true"></span>
@@ -37,9 +37,29 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-7 8a7 7 0 0 1 14 0z"></path></svg>
             <span>Atendentes</span>
           </button>
+          <button class="nav-item" data-page="products" type="button" aria-label="Produtos">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5zm3 1.25v8.5h2.25v-8.5zm3.9 4.25v4.25h2.25V12zm3.85-2.7v6.95H17V9.3z"></path></svg>
+            <span>Produtos</span>
+          </button>
           <button class="nav-item" data-page="transactions" type="button" aria-label="Transações">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14v2H5zm0 5h14v2H5zm0 5h14v2H5z"></path></svg>
             <span>Transações</span>
+          </button>
+          <button class="nav-item" data-page="goals" type="button" aria-label="Definir metas">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10h-2a8 8 0 1 1-8-8zm0 4a6 6 0 1 0 6 6h-2a4 4 0 1 1-4-4zm0 4a2 2 0 1 0 2 2h-2zM20.7 3.3 22 2v4h-4l1.3-1.3-5.6 5.6-1.4-1.4z"></path></svg>
+            <span>Definir metas</span>
+          </button>
+          <button class="nav-item" data-page="settings-attendants" type="button" aria-label="Configurar atendentes">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 11a4 4 0 1 0-8 0 4 4 0 0 0 8 0zm-12 9a8 8 0 0 1 16 0zm15-12h3v2h-3zm0 4h3v2h-3z"></path></svg>
+            <span>Configurar atendentes</span>
+          </button>
+          <button class="nav-item" data-page="settings-products" type="button" aria-label="Configurar produtos">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v4H4zm0 6h7v4H4zm9 0h7v4h-7z"></path></svg>
+            <span>Configurar produtos</span>
+          </button>
+          <button class="nav-item" data-page="integrations" type="button" aria-label="Integrações">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h4v2H7a3 3 0 0 0 0 6h4v2H7A5 5 0 0 1 7 7zm6 0h4a5 5 0 0 1 0 10h-4v-2h4a3 3 0 0 0 0-6h-4zm-4 4h6v2H9z"></path></svg>
+            <span>Integrações</span>
           </button>
           <button class="nav-item" data-page="notifications" type="button" aria-label="Notificações">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22zm7-5-2-2v-5a5 5 0 0 0-10 0v5l-2 2v1h14z"></path></svg>
@@ -54,7 +74,7 @@
             <span class="brand-mark" aria-hidden="true">
               <img src="../assets/icon-192.png?v=55" alt="">
             </span>
-            <img class="brand-wordmark" src="../assets/hs-metrics-written-logo.webp?v=56" alt="HS Metrics">
+            <img class="brand-wordmark" src="../assets/hs-metrics-written-logo.webp?v=97" alt="HS Metrics">
           </a>
           <span class="sync-pill" id="syncStatus">Carregando</span>
         </header>
@@ -72,6 +92,17 @@
             <button class="period-button" data-period="lastMonth" type="button">Mês passado</button>
             <button class="period-button" data-period="custom" type="button">Personalizado</button>
           </div>
+          <label class="mobile-period-control">
+            <span>Período</span>
+            <select id="mobilePeriodSelect" aria-label="Selecionar período">
+              <option value="today">Hoje</option>
+              <option value="yesterday">Ontem</option>
+              <option value="last7">Últimos 7 dias</option>
+              <option value="month">Este mês</option>
+              <option value="lastMonth">Mês passado</option>
+              <option value="custom">Personalizado</option>
+            </select>
+          </label>
           <div class="custom-fields" id="customFields">
             <label>
               <span>Início</span>
@@ -82,7 +113,27 @@
               <input id="endDate" type="date">
             </label>
           </div>
-          <button class="refresh-button" id="refreshButton" type="button">Atualizar</button>
+          <div class="dashboard-filters" aria-label="Filtros do dashboard">
+            <label>
+              <span>Atendente</span>
+              <select id="dashboardAttendantFilter"></select>
+            </label>
+            <label>
+              <span>Produto</span>
+              <select id="dashboardProductFilter"></select>
+            </label>
+            <label>
+              <span>Conta de anúncio</span>
+              <select id="dashboardAccountFilter"></select>
+            </label>
+          </div>
+          <div class="refresh-actions">
+            <button class="discard-drafts-button" id="discardDraftsButton" type="button" hidden>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 21a2 2 0 0 1-2-2V8h14v11a2 2 0 0 1-2 2H7Zm2-3h2v-7H9v7Zm4 0h2v-7h-2v7ZM4 6V4h5l1-1h4l1 1h5v2H4Z"></path></svg>
+              <span>Descartar rascunhos</span>
+            </button>
+            <button class="refresh-button" id="refreshButton" type="button">Atualizar</button>
+          </div>
         </section>
 
         <section class="page is-active" id="page-dashboard" data-page="dashboard">
@@ -108,7 +159,7 @@
               <strong id="metricMargin">N/A</strong>
             </article>
             <article class="metric metric-roas">
-              <span>ROAS</span>
+              <span>ROI</span>
               <strong id="metricRoas">0,00</strong>
             </article>
             <article class="metric metric-sales">
@@ -124,16 +175,28 @@
               <strong id="metricAverageTicket">N/A</strong>
             </article>
             <article class="metric metric-leads">
-              <span>Leads</span>
+              <span id="metricLeadLabel">Conversas</span>
               <strong id="metricLeads">0</strong>
             </article>
             <article class="metric metric-cpl">
-              <span>Custo por Lead</span>
+              <span id="metricCplLabel">Custo por conversa</span>
               <strong id="metricCpl">N/A</strong>
             </article>
             <article class="metric metric-conversion-rate">
               <span>Conversão Front</span>
               <strong id="metricConversionRate">N/A</strong>
+            </article>
+            <article class="metric metric-refunded-sales optional-refund-metric" hidden>
+              <span>Vendas reembolsadas</span>
+              <strong id="metricRefundedSales">R$ 0,00</strong>
+            </article>
+            <article class="metric metric-refund-rate optional-refund-metric" hidden>
+              <span>Reembolso</span>
+              <strong id="metricRefundRate">0,0%</strong>
+            </article>
+            <article class="metric metric-chargeback-rate optional-refund-metric" hidden>
+              <span>Chargeback</span>
+              <strong id="metricChargebackRate">0,0%</strong>
             </article>
           </div>
 
@@ -172,8 +235,8 @@
                   <tr>
                     <th>Atendente</th>
                     <th>Vendas</th>
-                    <th><span class="desktop-label">Faturamento</span><span class="mobile-label">Fat.</span></th>
-                    <th><span class="desktop-label">Ticket médio</span><span class="mobile-label">Ticket</span></th>
+                    <th>Faturamento</th>
+                    <th><span class="desktop-label">Ticket médio</span><span class="mobile-label">Ticket médio</span></th>
                   </tr>
                 </thead>
                 <tbody id="attendantsBody"></tbody>
@@ -184,11 +247,42 @@
           </article>
         </section>
 
+        <section class="page" id="page-products" data-page="products">
+          <article class="panel products-panel">
+            <div class="panel-header">
+              <h1>Produtos</h1>
+              <span class="period-label" id="productsPeriod">Hoje</span>
+            </div>
+            <div class="products-layout">
+              <div class="product-chart-card">
+                <div class="product-chart-title">Receita por produto</div>
+                <div class="product-donut" id="productsDonut" aria-label="Participação da receita por produto"></div>
+                <div class="product-legend" id="productsLegend"></div>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Produto</th>
+                      <th>Vendas</th>
+                      <th>Faturamento</th>
+                      <th><span class="desktop-label">Ticket médio</span><span class="mobile-label">Ticket</span></th>
+                      <th>Receita</th>
+                    </tr>
+                  </thead>
+                  <tbody id="productsBody"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="empty-state" id="productsEmpty">Nenhum produto vendido.</div>
+          </article>
+        </section>
+
         <section class="page" id="page-transactions" data-page="transactions">
           <article class="panel transactions-panel">
             <div class="transactions-head">
               <h1>Transações</h1>
-              <input id="transactionSearch" type="search" placeholder="Buscar por pagador, atendente ou valor" aria-label="Buscar transações">
+              <input id="transactionSearch" type="search" placeholder="Buscar por cliente, telefone, atendente ou valor" aria-label="Buscar transações">
             </div>
             <div class="table-wrap">
               <table>
@@ -196,7 +290,8 @@
                   <tr>
                     <th>Data</th>
                     <th>Hora</th>
-                    <th>Pagador</th>
+                    <th>Cliente</th>
+                    <th>Telefone</th>
                     <th>Atendente</th>
                     <th>Moeda</th>
                     <th>Valor</th>
@@ -205,28 +300,308 @@
                 <tbody id="transactionsBody"></tbody>
               </table>
             </div>
+            <dialog class="transaction-editor" id="transactionEditor">
+              <form method="dialog" class="transaction-editor-card" id="transactionEditForm">
+                <div class="editor-head">
+                  <h2>Editar transação</h2>
+                  <button class="editor-close" id="transactionEditCancel" value="cancel" type="button" aria-label="Fechar">×</button>
+                </div>
+                <input id="transactionEditId" type="hidden">
+                <div class="editor-grid">
+                  <label class="editor-native-field editor-date-field" id="transactionEditDateLabel" data-display="">
+                    <span>Data</span>
+                    <input id="transactionEditDate" type="date" required>
+                  </label>
+                  <label class="editor-native-field editor-time-field" id="transactionEditTimeLabel" data-display="">
+                    <span>Hora</span>
+                    <input id="transactionEditTime" type="time" required>
+                  </label>
+                  <label>
+                    <span>Cliente</span>
+                    <input id="transactionEditPayer" type="text" autocomplete="off">
+                  </label>
+                  <label>
+                    <span>Telefone</span>
+                    <input id="transactionEditPhone" type="text" inputmode="tel" autocomplete="off">
+                  </label>
+                  <label>
+                    <span>Atendente</span>
+                    <select id="transactionEditAttendant">
+                      <option value="Sem atendente">Sem atendente</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>Produto</span>
+                    <select id="transactionEditProduct">
+                      <option value="">Sem produto</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>Moeda</span>
+                    <select id="transactionEditCurrency">
+                      <option value="BRL">BRL</option>
+                      <option value="USD">USD</option>
+                      <option value="EUR">EUR</option>
+                      <option value="GBP">GBP</option>
+                      <option value="CHF">CHF</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>Valor</span>
+                    <input id="transactionEditValue" type="text" inputmode="decimal" required autocomplete="off">
+                  </label>
+                </div>
+                <div class="editor-actions">
+                  <button class="delete-action" id="transactionDeleteSubmit" type="button">Apagar</button>
+                  <button class="ghost-action" id="transactionEditCancelBottom" type="button">Cancelar</button>
+                  <button class="save-action" id="transactionEditSubmit" type="submit">Salvar</button>
+                </div>
+              </form>
+            </dialog>
             <div class="pager">
               <button id="prevPage" type="button">Anterior</button>
               <span id="pageInfo">Página 1 de 1</span>
               <button id="nextPage" type="button">Próxima</button>
             </div>
           </article>
+          <article class="panel manual-sale-panel">
+            <div class="panel-header"><h1>Lançamentos manuais</h1></div>
+            <form class="manual-sale-form" id="manualSaleForm">
+              <label>
+                <span>Valor</span>
+                <input id="manualSaleValue" type="text" inputmode="decimal" placeholder="R$ 0,00" autocomplete="off" required>
+              </label>
+              <label>
+                <span>Moeda</span>
+                <select id="manualSaleCurrency">
+                  <option value="BRL">BRL</option>
+                  <option value="USD">USD</option>
+                  <option value="EUR">EUR</option>
+                  <option value="GBP">GBP</option>
+                  <option value="CHF">CHF</option>
+                </select>
+              </label>
+              <label>
+                <span>Cliente</span>
+                <input id="manualSalePayer" type="text" placeholder="Nome do cliente" autocomplete="off">
+              </label>
+              <label>
+                <span>Telefone</span>
+                <input id="manualSalePhone" type="text" inputmode="tel" placeholder="(00) 00000-0000" autocomplete="off">
+              </label>
+              <label>
+                <span>Atendente</span>
+                <select id="manualSaleAttendant">
+                  <option value="Sem atendente">Sem atendente</option>
+                </select>
+              </label>
+              <label>
+                <span>Produto</span>
+                <select id="manualSaleProduct">
+                  <option value="">Sem produto</option>
+                </select>
+              </label>
+              <label>
+                <span>Data</span>
+                <input id="manualSaleDate" type="date">
+              </label>
+              <label>
+                <span>Hora</span>
+                <input id="manualSaleTime" type="time">
+              </label>
+              <p class="manual-sale-note">Data e hora são opcionais. Se ficarem vazias, usamos o momento do lançamento.</p>
+              <button id="manualSaleSubmit" type="submit">Adicionar venda</button>
+            </form>
+          </article>
+        </section>
+
+        <section class="page" id="page-goals" data-page="goals">
+          <article class="panel settings-panel">
+            <div class="panel-header"><h1>Definir metas</h1></div>
+            <p class="settings-copy">Cadastre título, valor, prêmio e status das metas que aparecem no app da atendente.</p>
+            <input class="settings-search" id="goalsSearch" type="search" placeholder="Buscar meta ou atendente">
+            <form class="settings-add-form" id="addGoalForm">
+              <input id="addGoalAttendant" type="text" placeholder="Atendente">
+              <input id="addGoalTitle" type="text" placeholder="Título da meta">
+              <input id="addGoalValue" type="text" inputmode="decimal" placeholder="Valor">
+              <input id="addGoalPrize" type="text" placeholder="Prêmio">
+              <button type="submit">Adicionar meta</button>
+            </form>
+            <div class="settings-table settings-goals-table">
+              <div class="settings-table-head">
+                <span>Atendente</span>
+                <span>Meta</span>
+                <span>Valor</span>
+                <span>Prêmio</span>
+                <span>Status</span>
+                <span></span>
+              </div>
+              <div id="goalsSettingsList"></div>
+            </div>
+          </article>
+        </section>
+
+        <section class="page" id="page-settings-attendants" data-page="settings-attendants">
+          <article class="panel settings-panel">
+            <div class="panel-header"><h1>Configurar atendentes</h1></div>
+            <p class="settings-copy">Gerencie nome, comissão, fixo mensal, início, pausas e permissão de venda manual dos atendentes.</p>
+            <input class="settings-search" id="attendantsSearch" type="search" placeholder="Buscar atendente">
+            <form class="settings-add-form compact" id="addAttendantForm">
+              <input id="addAttendantName" type="text" placeholder="Nome do atendente">
+              <button type="submit">Adicionar atendente</button>
+            </form>
+            <div class="settings-toggle-grid" id="attendantCostOptions" aria-label="Custos de atendentes no lucro">
+              <label class="settings-check-row">
+                <span>Subtrair comissão no lucro</span>
+                <span class="switch">
+                  <input type="checkbox" data-attendant-cost="commission">
+                  <span class="slider"></span>
+                </span>
+              </label>
+              <label class="settings-check-row">
+                <span>Subtrair fixo mensal no lucro</span>
+                <span class="switch">
+                  <input type="checkbox" data-attendant-cost="fixed">
+                  <span class="slider"></span>
+                </span>
+              </label>
+            </div>
+            <div class="settings-table settings-attendants-table">
+              <div class="settings-table-head">
+                <span>Nome</span>
+                <span>Comissão</span>
+                <span>Fixo mensal</span>
+                <span>Início</span>
+                <span>Pausas</span>
+                <span>Lançar vendas</span>
+                <span></span>
+              </div>
+              <div id="manualSaleAttendantsList"></div>
+            </div>
+            <p class="settings-help">Apagar um atendente limpa apenas a configuração dele nesta tela. As transações antigas continuam preservadas com o nome que chegou na venda.</p>
+            <p class="settings-help">O fixo mensal é distribuído ao longo de 30 dias para aparecer como ganho fixo diário no app do atendente. O dia 31 é sempre desconsiderado nessa divisão.</p>
+            <p class="settings-help">Os seletores de comissão e fixo definem se esses custos entram no cálculo do lucro do dashboard.</p>
+            <p class="settings-help">Lançar vendas habilita ou bloqueia lançamentos manuais no app do atendente. Use apenas para pessoas em que você confia para registrar vendas por conta própria.</p>
+            <p class="settings-help">Pausas devem ser lançadas como períodos separados por ponto e vírgula. Exemplo: 15/06/2026 a 23/06/2026; 02/07/2026 a 04/07/2026.</p>
+          </article>
+        </section>
+
+        <section class="page" id="page-settings-products" data-page="settings-products">
+          <article class="panel settings-panel">
+            <div class="panel-header"><h1>Configurar produtos</h1></div>
+            <p class="settings-copy">Gerencie produtos vendidos, custos e quais produtos entram no cálculo de Conversão Front.</p>
+            <input class="settings-search" id="productsSearch" type="search" placeholder="Buscar produto">
+            <form class="settings-add-form compact" id="addProductForm">
+              <select id="addProductName">
+                <option value="">Selecione um produto vendido</option>
+              </select>
+              <button type="submit">Adicionar produto</button>
+            </form>
+            <div class="settings-table settings-products-table">
+              <div class="settings-table-head">
+                <span>Produto</span>
+                <span>Custo fixo</span>
+                <span>Custo %</span>
+                <span>Front</span>
+                <span></span>
+              </div>
+              <div id="frontProductsList"></div>
+            </div>
+            <p class="settings-help">Apagar um produto limpa apenas a configuração dele nesta tela. As transações antigas continuam preservadas com o produto que chegou na venda.</p>
+            <p class="settings-help">Para evitar nomes diferentes, é obrigatório que o produto tenha pelo menos uma venda registrada. Depois disso, ele aparece aqui como produto vendido nos últimos 90 dias e você só seleciona, sem precisar digitar.</p>
+          </article>
+        </section>
+
+        <section class="page" id="page-integrations" data-page="integrations">
+          <article class="panel settings-panel">
+            <div class="panel-header"><h1>Integrações</h1></div>
+            <div class="settings-grid">
+              <div><h2>Vendas automáticas</h2><p>Configure sua ferramenta para enviar um POST para a URL do Apps Script. Envie valor, cliente, telefone, moeda, atendente e produto. Campos recomendados: valor, pagador, telefone, moeda, atendente e produto.</p></div>
+              <div><h2>Lançamento manual</h2><p>Se a venda ainda não roda no automático, lance em segundos pela aba Transações.</p></div>
+              <div><h2>Meta Ads</h2><p>Conecte suas contas Meta Ads para acompanhar gastos, imposto, leads ou conversas e lucro real. Em breve esta tela terá conexão guiada; por enquanto, deixe as propriedades da API configuradas no Apps Script.</p></div>
+            </div>
+            <h2 class="settings-subtitle">Indicador do dashboard</h2>
+            <p class="settings-copy is-compact">Escolha se o dashboard usa conversas iniciadas ou leads vindos do Meta Ads.</p>
+            <div class="segmented-options" id="leadMetricOptions" role="group" aria-label="Indicador do dashboard">
+              <button class="is-active" data-lead-source="conversations" type="button" aria-pressed="true">Conversas</button>
+              <button data-lead-source="leads" type="button" aria-pressed="false">Leads</button>
+            </div>
+            <h2 class="settings-subtitle">Reembolsos e chargeback</h2>
+            <p class="settings-copy is-compact">Mostre vendas reembolsadas, reembolso e chargeback no dashboard. Isso só funciona para gateways que enviam reembolso e chargeback pelo webhook.</p>
+            <div class="settings-toggle-grid" id="refundMetricOptions" aria-label="Reembolsos no dashboard">
+              <label class="settings-check-row">
+                <span>Mostrar métricas de reembolso</span>
+                <span class="switch">
+                  <input type="checkbox" data-refund-metric="enabled">
+                  <span class="slider"></span>
+                </span>
+              </label>
+            </div>
+</article>
+        </section>
+
+        <section class="page" id="page-settings" data-page="settings">
+          <article class="panel settings-panel">
+            <div class="panel-header"><h1>Ajustes</h1></div>
+            <div class="settings-menu-grid">
+              <button class="settings-shortcut" data-page="goals" type="button">Definir metas</button>
+              <button class="settings-shortcut" data-page="settings-attendants" type="button">Atendentes</button>
+              <button class="settings-shortcut" data-page="settings-products" type="button">Produtos</button>
+              <button class="settings-shortcut" data-page="integrations" type="button">Integrações</button>
+              <button class="settings-shortcut" data-page="notifications" type="button">Notificações</button>
+            </div>
+          </article>
         </section>
 
         <section class="page" id="page-notifications" data-page="notifications">
-          <article class="panel notifications-panel">
-            <h1>Notificações</h1>
-            <div class="summary-card">
-              <strong>Resumo das Campanhas!</strong>
-              <p id="notificationSummary">Seu investimento está em R$ 0,00, com faturamento em R$ 0,00, com um CPA de N/A e um ROI de 0,00.</p>
-            </div>
-            <div class="notification-actions">
-              <h2>Horários</h2>
-              <button id="enableAllNotifications" type="button">Ativar todos</button>
-            </div>
-            <div class="notification-list" id="notificationList"></div>
-            <button class="test-notification" id="testNotification" type="button">Testar notificação</button>
-          </article>
+          <h1 class="notifications-page-title">Notificações</h1>
+          <div class="notifications-layout">
+              <article class="panel notification-section sale-notification-section">
+                <div class="notification-section-head">
+                  <div>
+                    <h2>Notificações de Venda</h2>
+                    <p>Receba um alerta sempre que uma nova venda for registrada.</p>
+                  </div>
+                </div>
+                <div class="notification-list" id="saleNotificationList"></div>
+                <div class="notification-preview-wrap">
+                  <h3>Prévia da notificação</h3>
+                  <div class="notification-preview">
+                    <img src="../assets/icon-192.png?v=55" alt="">
+                    <div>
+                      <strong>Venda realizada!</strong>
+                      <span id="saleNotificationPreviewBody">Valor: R$ 99,90 • Nome do atendente</span>
+                      <small>HS Metrics</small>
+                    </div></div>
+                </div>
+              </article>
+
+              <article class="panel notification-section report-notification-section">
+                <div class="notification-section-head report-heading">
+                  <div>
+                    <h2>Notificações de Relatório</h2>
+                    <p>Escolha os horários e o estilo dos seus resumos.</p>
+                  </div>
+                  <button id="enableAllNotifications" type="button">Ativar todos</button>
+                </div>
+                <h3>Horários</h3>
+                <div class="notification-list" id="notificationList"></div>
+                <h3>Padrão de notificação</h3>
+                <div class="report-style-options" id="reportStyleOptions"></div>
+                <div class="notification-preview-wrap">
+                  <h3>Prévia da notificação</h3>
+                  <div class="notification-preview" id="reportNotificationPreview">
+                    <img src="../assets/icon-192.png?v=55" alt="">
+                    <div>
+                      <strong id="reportPreviewTitle">Resumo das Campanhas!</strong>
+                      <span id="notificationSummary">Seu investimento está em R$ 0,00, com faturamento em R$ 0,00, com um CPA de N/A e um ROI de 0,00.</span>
+                      <small>HS Metrics</small>
+                    </div>
+                  </div>
+                </div>
+                <button class="test-notification" id="testNotification" type="button">Testar notificação</button>
+              </article>
+          </div>
         </section>
       </main>
 
@@ -239,19 +614,23 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-7 8a7 7 0 0 1 14 0z"></path></svg>
           <span>Atendentes</span>
         </button>
+        <button class="bottom-item" data-page="products" type="button" aria-label="Produtos">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5zm3 1.25v8.5h2.25v-8.5zm3.9 4.25v4.25h2.25V12zm3.85-2.7v6.95H17V9.3z"></path></svg>
+          <span>Produtos</span>
+        </button>
         <button class="bottom-item" data-page="transactions" type="button" aria-label="Transações">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14v2H5zm0 5h14v2H5zm0 5h14v2H5z"></path></svg>
           <span>Transações</span>
         </button>
-        <button class="bottom-item" data-page="notifications" type="button" aria-label="Notificações">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22zm7-5-2-2v-5a5 5 0 0 0-10 0v5l-2 2v1h14z"></path></svg>
-          <span>Notificações</span>
+        <button class="bottom-item" data-page="settings" type="button" aria-label="Ajustes">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.4 13.5a7.9 7.9 0 0 0 0-3l2-1.5-2-3.4-2.4 1a7.7 7.7 0 0 0-2.6-1.5L14 2h-4l-.4 3.1A7.7 7.7 0 0 0 7 6.6l-2.4-1-2 3.4 2 1.5a7.9 7.9 0 0 0 0 3l-2 1.5 2 3.4 2.4-1a7.7 7.7 0 0 0 2.6 1.5L10 22h4l.4-3.1a7.7 7.7 0 0 0 2.6-1.5l2.4 1 2-3.4zM12 15.2A3.2 3.2 0 1 1 12 8.8a3.2 3.2 0 0 1 0 6.4z"></path></svg>
+          <span>Ajustes</span>
         </button>
       </nav>
     </div>
     <script src="../config.js?v=55"></script>
-    <script src="../push-client.js?v=55"></script>
-    <script src="../app.js?v=55"></script>
+    <script src="../push-client.js?v=63"></script>
+    <script src="../app.js?v=96"></script>
   </body>
 </html>
 
