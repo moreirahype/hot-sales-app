@@ -1,6 +1,6 @@
-# Hot Sales App
+# HS Metrics App
 
-PWA do Hot Sales, com dashboard principal e app de atendente.
+PWA do HS Metrics, com dashboard principal e app de atendente.
 
 ## Páginas
 

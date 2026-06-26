@@ -99,8 +99,19 @@ button {
 }
 
 .brand span:last-child,
+.brand-wordmark,
 .nav-item span {
   transition: opacity 160ms ease;
+}
+
+.brand-wordmark {
+  display: block;
+  width: 168px;
+  max-width: min(168px, calc(100vw - 130px));
+  height: 42px;
+  flex: 0 1 auto;
+  object-fit: cover;
+  object-position: center;
 }
 
 .brand-mark {
@@ -224,7 +235,8 @@ body.sidebar-collapsed .sidebar .brand {
   justify-content: center;
 }
 
-body.sidebar-collapsed .sidebar .brand span:last-child {
+body.sidebar-collapsed .sidebar .brand span:last-child,
+body.sidebar-collapsed .sidebar .brand-wordmark {
   width: 0;
   opacity: 0;
   overflow: hidden;
@@ -853,7 +865,8 @@ th:last-child {
     justify-content: flex-start;
   }
 
-  body.sidebar-collapsed .mobile-header .brand span:last-child {
+  body.sidebar-collapsed .mobile-header .brand span:last-child,
+  body.sidebar-collapsed .mobile-header .brand-wordmark {
     width: auto;
     opacity: 1;
     overflow: visible;
@@ -870,6 +883,11 @@ th:last-child {
 
   .mobile-header .brand {
     font-size: clamp(18px, 5.2vw, var(--text-mobile-brand));
+  }
+
+  .mobile-header .brand-wordmark {
+    width: min(160px, calc(100vw - 188px));
+    height: 40px;
   }
 
   .mobile-header .brand-mark {
@@ -1160,6 +1178,11 @@ th:last-child {
 @media (max-width: 380px) {
   .mobile-header .brand {
     font-size: var(--text-brand);
+  }
+
+  .mobile-header .brand-wordmark {
+    width: min(148px, calc(100vw - 172px));
+    height: 38px;
   }
 
   .mobile-header .brand-mark {

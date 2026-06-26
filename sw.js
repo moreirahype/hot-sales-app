@@ -1,4 +1,4 @@
-const CACHE_NAME = "home-studio-bi-v55";
+const CACHE_NAME = "hsmetrics-sales-app-v56";
 const ASSETS = [
   "./styles.css",
   "./app.js",
@@ -13,7 +13,8 @@ const ASSETS = [
   "./k9v2m7q4/index.html",
   "./assets/apple-touch-icon.png",
   "./assets/icon-192.png",
-  "./assets/icon-512.png"
+  "./assets/icon-512.png",
+  "./assets/hs-metrics-written-logo.webp"
 ];
 
 self.addEventListener("install", (event) => {
